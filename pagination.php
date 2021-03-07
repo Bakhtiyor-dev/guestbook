@@ -1,23 +1,19 @@
 <?php
-	include('db.php');
+require('db.php');
+if (isset($_GET['pageno'])) {
+    $pageno = (int)$_GET['pageno'];
+} else {
+    $pageno = 1;
+}
+$no_of_records_per_page = 2;
+$offset = ($pageno-1) * $no_of_records_per_page;
 
-	$offset=$_GET['offset'];
-	$limit=$_GET['limit'];
-	
-	$sqlForCount="SELECT COUNT(id) FROM records";
-	$count=$conn->query($sqlForCount)->fetch_array(MYSQLI_ASSOC)['COUNT(id)'];
-	
-	$sql="SELECT * FROM records LIMIT $offset,$limit";
-	$result=$conn->query($sql);
-	
-	while($row = $result->fetch_array(MYSQLI_ASSOC)){
-        $myArray[] = $row;
-    }
- 
-    
-    echo json_encode([
-    	'data'=>json_encode($myArray),
-    	'count'=>$count
-    ]);
-	
-	
+$total_pages_sql = "SELECT COUNT(*) FROM records";
+$result = mysqli_query($conn,$total_pages_sql);
+$total_rows = mysqli_fetch_array($result)[0];
+$total_pages = ceil($total_rows / $no_of_records_per_page);
+
+$sql = "SELECT * FROM records LIMIT $offset, $no_of_records_per_page";
+$res_data = mysqli_query($conn,$sql);
+mysqli_close($conn);    
+?>

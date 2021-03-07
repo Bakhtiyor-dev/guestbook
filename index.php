@@ -1,23 +1,5 @@
 <?php
-require('db.php');
-
-if (isset($_GET['pageno'])) {
-    $pageno = $_GET['pageno'];
-} else {
-    $pageno = 1;
-}
-
-$no_of_records_per_page = 1;
-$offset = ($pageno-1) * $no_of_records_per_page;
-
-$total_pages_sql = "SELECT COUNT(*) FROM records";
-$result = mysqli_query($conn,$total_pages_sql);
-$total_rows = mysqli_fetch_array($result)[0];
-$total_pages = ceil($total_rows / $no_of_records_per_page);
-
-$sql = "SELECT * FROM records LIMIT $offset, $no_of_records_per_page";
-$res_data = mysqli_query($conn,$sql);
-mysqli_close($conn);
+    require('pagination.php');
 ?>
 <!doctype html>
 <html lang="en" class="h-100">
@@ -26,7 +8,6 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Гостевая книга</title>
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">    
-
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -48,44 +29,49 @@ mysqli_close($conn);
     </nav>
     
     <main>
-        <div class="container" id="container">
-            <?php while($row = $res_data->fetch_assoc()):?>  
-              <div class="card m-2" style="width: 50rem;">
-                <div class="card-header d-flex">
-                  <div>
-                      <h5><?=$row['name']?></h5> <?=$row['email']?> оставил запись в <?=$row['created_at']?></div> 
-                  </div>
-                  <div class="card-body">
-                      <?=$row['body']?>
-                  </div>
-              </div>
-          <?php endwhile;?> 
-      </div>
+        <?php if($pageno<=$total_pages && $pageno>0):?>
 
-      <ul class="pagination justify-content-center mt-3">
-          <li class="page-item <?php if($pageno<=1)echo 'disabled';?>">
-              <a class="page-link" 
-              href="/?pageno=<?php if($pageno>1)echo --$pageno?>" 
-              tabindex="-1" 
-              aria-disabled="true">
-              Назад
-          </a>
-      </li>
-        <?php for($i=1;$i<=$total_pages;$i++):?>
-            <li class="page-item <?php if($pageno==$i) echo 'active';?>">
+            <div class="container" id="container">
+                <?php while($row = $res_data->fetch_assoc()):?>  
+                  <div class="card m-2" style="width: 50rem;">
+                    <div class="card-header d-flex">
+                      <div>
+                          <h5><?=$row['name']?></h5> <?=$row['email']?> оставил запись в <?=$row['created_at']?></div> 
+                      </div>
+                      <div class="card-body">
+                          <?=$row['body']?>
+                      </div>
+                  </div>
+              <?php endwhile;?> 
+          </div>
+          <ul class="pagination justify-content-center mt-3">
+              <li class="page-item <?php if($pageno<=1)echo 'disabled';?>">
+                  <a class="page-link" 
+                  href="/?pageno=<?php if($pageno>1)echo $pageno-1?>"  
+                  >
+                  Назад
+              </a>
+          </li>
+          <?php for($i=1;$i<=$total_pages;$i++):?>
+            <li class="page-item <?php if($pageno==$i)echo 'active';?>">
                 <a class="page-link" href="/?pageno=<?=$i?>">
                     <?=$i?>
                 </a>
             </li>
         <?php endfor;?>
-    <li class="page-item <?php if($pageno>=$total_pages)echo 'disabled';?>">
-        
-        <a class="page-link" href="/?pageno=<?php if($pageno<$total_pages)echo ++$pageno?>">Далее</a>
-    </li>
-</ul>
+        <li class="page-item <?php if($pageno>=$total_pages)echo 'disabled';?>">
+            <a class="page-link" href="/?pageno=<?php if($pageno<$total_pages)echo $pageno+1?>">Далее</a>
+        </li>
+    </ul>
+    <?php else:?>
+        <div class="alert text-center mt-2 alert-danger">
+            <h5>Ручное изменение ссылки.</h5>
+        </div>
+    <?php endif;?>
+
 </main>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
 <script src="pagination.js" type="text/javascript" charset="utf-8" async defer></script>
 <script src="assets/js/bootstrap.bundle.js" type="text/javascript" charset="utf-8" async defer></script>
