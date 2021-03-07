@@ -79,6 +79,7 @@ mysqli_close($conn);
             </li>
         <?php endfor;?>
     <li class="page-item <?php if($pageno>=$total_pages)echo 'disabled';?>">
+        
         <a class="page-link" href="/?pageno=<?php if($pageno<$total_pages)echo ++$pageno?>">Далее</a>
     </li>
 </ul>
