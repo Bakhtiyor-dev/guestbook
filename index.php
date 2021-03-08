@@ -11,7 +11,6 @@
 </head>
 
 <body class="d-flex flex-column h-100">
-
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Гостевая книга</a>
@@ -63,7 +62,10 @@
             <a class="page-link" href="/?pageno=<?php if($pageno<$total_pages)echo $pageno+1?>">Далее</a>
         </li>
     </ul>
-    <?php else:?>
+    <?php elseif($total_pages==0):?>
+        <h5>no data</h5>
+
+    <?else:?>
         <div class="alert text-center mt-2 alert-danger">
             <h5>Ручное изменение ссылки.</h5>
         </div>
@@ -73,7 +75,6 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="assets/js/popper.min.js"></script>
-<script src="pagination.js" type="text/javascript" charset="utf-8" async defer></script>
 <script src="assets/js/bootstrap.bundle.js" type="text/javascript" charset="utf-8" async defer></script>
 
 </body>
