@@ -62,9 +62,11 @@
             <a class="page-link" href="/?pageno=<?php if($pageno<$total_pages)echo $pageno+1?>">Далее</a>
         </li>
     </ul>
+    
     <?php elseif($total_pages==0):?>
-        <h5>no data</h5>
-
+        <div class="alert text-center mt-2 alert-secondary">
+            <h5>Нету записей</h5>
+        </div>
     <?else:?>
         <div class="alert text-center mt-2 alert-danger">
             <h5>Ручное изменение ссылки.</h5>
