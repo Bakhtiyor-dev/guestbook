@@ -20,7 +20,7 @@
       <?php endif;?>
      
       <label for="inputEmail" class="sr-only">Email</label>
-      <input type="email" name="admin_email" id="inputEmail" class="form-control mb-2" placeholder="Email" required autofocus>
+      <input type="email" name="admin_email" id="inputEmail" class="form-control mb-2" placeholder="Email"  autofocus required>
       <label for="inputPassword" class="sr-only">Пароль</label>
       <input type="password" name="admin_password" id="inputPassword" class="form-control" placeholder="Пароль" required>
       
@@ -29,3 +29,6 @@
     </form>
   </body>
 </html>
+<?php 
+  unset($_SESSION['message']);
+?>

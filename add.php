@@ -1,3 +1,8 @@
+<?php
+session_start();
+$session=$_SESSION;
+$old=$_SESSION['old'];
+?>
 <!doctype html>
 <html lang="en" class="h-100">
 <head>
@@ -29,62 +34,66 @@
         <div class="container">
             <div class="card shadow">
                 <div class="card-header">
-                    <?php if($created):?>
-                        <div class="alert alert-primary">Запись добавлена!</div>
+                    <?php if(!empty($errors=$session['errors'])):?>
+                        <?php foreach ($errors as $error):?>
+                            <div class="alert alert-danger"><?=$error?></div>
+                        <?php endforeach;?>
+                    <?php endif;?>
+                    <?php if($_SESSION['success']):?>
+                        <div class="alert alert-success"><?=$session['success'];?></div>
                     <?php endif;?>
                     <h1 class="text-center">Гостевая книга</h1>
                 </div>
                 <div class="card-body">
 
-                    <form action="/save.php" method="post" accept-charset="utf-8">
-                         <div class="mb-3 row">
-                            <label for="name" class="col-sm-2 col-form-label">Имя:</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="name" class="form-control" id="name" placeholder="Ваше имя" required>
-                            </div>
+                    <form action="crud/store.php" method="post" accept-charset="utf-8">
+                     <div class="mb-3 row">
+                        <label for="name" class="col-sm-2 col-form-label">Имя:</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="name" class="form-control" value="<?=$old['name']?>" id="name" placeholder="Ваше имя" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+
+                        <label for="email" class="col-sm-2 col-form-label">Email:</label>
+
+                        <div class="col-sm-10">
+                            <input type="email" name='email' class="form-control" value="<?=$old['email']?>" id="email" placeholder="Ваш email" required>
                         </div>
 
-                        <div class="mb-3 row">
-                            
-                            <label for="email" class="col-sm-2 col-form-label">Email:</label>
-                            
-                            <div class="col-sm-10">
-                                <input type="email" name='email' class="form-control" id="email" placeholder="Ваш email" required>
-                            </div>
+                    </div>
 
-                        </div>
+                    <div class="mb-3 row">
+                        <label for="descr" class="col-sm-2 col-form-label">Описание:</label>
+                        <div class="col-sm-10">
 
-                        <div class="mb-3 row">
-                            <label for="descr" class="col-sm-2 col-form-label">Описание:</label>
-                            <div class="col-sm-10">
-                              
-                               <textarea class="form-control mb-3" name="body" id="descr" rows="8" required></textarea>
-                               <div class="form-group">
-                                <div class="g-recaptcha" data-sitekey="6Ld_PnAaAAAAAD4LdQemG81_WFmkUkXAwNX81eA-" required>
-                                </div>
-                                <span class="text-danger">
-                                    <?php
-                                        if($response->success===false)
-                                            echo '<p>Пройдите тест reCaptcha!</p>'; 
-                                    ?>
-                                </span>
-                               </div>                               
+                           <textarea class="form-control mb-3" name="body" id="descr" rows="8" required><?=$old['body']?></textarea>
+                           <div class="form-group">
+                            <div class="g-recaptcha" data-sitekey="6Ld_PnAaAAAAAD4LdQemG81_WFmkUkXAwNX81eA-" >
                             </div>
-                        </div>
-                           <div class="mb-3">
-                              <button type="submit" 
-                                        name="submit"
-                                  class="btn btn-primary form-control w-auto" 
-                                  style="float:right;">
-                                Добавить
-                              </button>
-                            </div>
-                        </div>
-                    </form>
+                        </div>                               
+                    </div>
                 </div>
-            </div>
-        </div>
-    </main>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                <div class="mb-3">
+                  <button type="submit" 
+                  name="submit"
+                  class="btn btn-outline-primary form-control w-auto" 
+                  style="float:right;">
+                  Добавить
+              </button>
+          </div>
+      </div>
+  </form>
+</div>
+</div>
+</div>
+</main>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </body>
 </html>
+<?php
+unset($_SESSION['success']);
+unset($_SESSION['errors']);
+unset($_SESSION['old']);
+?>

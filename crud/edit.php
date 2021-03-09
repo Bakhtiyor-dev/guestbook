@@ -1,18 +1,23 @@
 <?php
 session_start();
 if(!$_SESSION['loggedIn']){
-  header('Location:/login.php');
+  header('Location:/admin/login.php');
   die();
 }else{
-  require('db.php');
+  require('../database/db.php');
+  $pageno=mysqli_real_escape_string($conn,htmlspecialchars($_GET['pageno']));
+  $id=mysqli_real_escape_string($conn,htmlspecialchars($_GET['id']));
+  $id=htmlspecialchars($id);
 
-  //$id=mysqli_real_escape_string($conn,htmlspecialchars($_GET['id']));
-  $id=45;
+  if(!$id || empty($id) || $id<=0 || !isset($id))
+    die();
+
   $sql="SELECT * FROM records WHERE id=$id";
   $row=$conn->query($sql)->fetch_assoc();  
   $conn->close();
 }
 ?>
+
 <?php if($_SESSION['loggedIn']):?>
   <!DOCTYPE html>
   <html lang="en">
@@ -26,9 +31,14 @@ if(!$_SESSION['loggedIn']){
   <body>
     <nav class="navbar navbar-dark bg-dark">
       <div class="container-fluid">
+        <div>
         <a class="navbar-brand text-white">Админ</a>
+        <a class="navbar-brand text-white" href="/admin"><small>Назад</small></a>
+          
+        </div>
+        
         <div class="d-flex">
-          <form action="/logout.php" method="post" accept-charset="utf-8">
+          <form action="/admin/logout.php" method="post" accept-charset="utf-8">
             <button type="submit" class="btn btn-outline-warning">Выйти</button>
           </form>
         </div>
@@ -41,14 +51,15 @@ if(!$_SESSION['loggedIn']){
         </div>
         <div class="card-body">
 
-          <form action="/update.php" method="post" accept-charset="utf-8">
+          <form action="/crud/update.php" method="post" accept-charset="utf-8">
            <div class="mb-3 row">
             <label for="name" class="col-sm-2 col-form-label">Имя:</label>
             <div class="col-sm-10">
               <input type="text" name="name" class="form-control" id="name" value="<?=$row['name']?>" required>
             </div>
           </div>
-
+          <input type="hidden" value="<?=$row['id'];?>" name="id">
+          <input type="hidden" value="<?=$pageno?>" name="pageno">
           <div class="mb-3 row">
 
             <label for="email" class="col-sm-2 col-form-label">Email:</label>
